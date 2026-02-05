@@ -1,3 +1,5 @@
+import MovieCard from "@/components/MovieCard";
+
 type Movie = {
   id: number;
   title: string;
@@ -23,7 +25,7 @@ export default async function HomePage() {
 
       <ul>
         {movies.map((movie) => (
-          <li key={movie.id}>{movie.title}</li>
+          <MovieCard key={movie.id} title={movie.title} />
         ))}
       </ul>
     </main>
