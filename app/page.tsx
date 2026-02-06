@@ -3,6 +3,7 @@ import MovieCard from "@/components/MovieCard";
 type Movie = {
   id: number;
   title: string;
+  poster_path: string | null;
 };
 
 async function getPopularMovies(): Promise<Movie[]> {
@@ -20,12 +21,15 @@ export default async function HomePage() {
   const movies = await getPopularMovies();
 
   return (
-    <main>
+    <main className="p-4">
       <h1>Películas populares</h1>
 
       <ul>
         {movies.map((movie) => (
-          <MovieCard key={movie.id} title={movie.title} />
+          <MovieCard 
+          key={movie.id} 
+          title={movie.title}
+          posterPath={movie.poster_path} />
         ))}
       </ul>
     </main>
