@@ -28,6 +28,7 @@ export default async function HomePage() {
         {movies.map((movie) => (
           <MovieCard 
           key={movie.id} 
+          id={movie.id}
           title={movie.title}
           posterPath={movie.poster_path} />
         ))}
