@@ -1,9 +1,10 @@
 "use client"
 import MovieCard from "@/components/MovieCard";
 import { useEffect, useState } from "react";
+import type { Movie } from "@/types/movie";
 
 export default function FavoritosPage() {
-    const [favoriteMovies, setFavoriteMovies] = useState<any[]>([]);
+    const [favoriteMovies, setFavoriteMovies] = useState<Movie[]>([]);
 
     useEffect(() => {
         const storedFavorites = localStorage.getItem("favorites");
@@ -41,9 +42,7 @@ export default function FavoritosPage() {
                     {favoriteMovies.map((movie) => (
                         <MovieCard
                         key={movie.id}
-                        id={movie.id}
-                        title={movie.title}
-                        posterPath={movie.poster_path}
+                        movie={movie}
                         />
                     ))}
                 </ul>

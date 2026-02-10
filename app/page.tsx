@@ -1,10 +1,5 @@
 import MovieCard from "@/components/MovieCard";
-
-type Movie = {
-  id: number;
-  title: string;
-  poster_path: string | null;
-};
+import type { Movie } from "@/types/movie";
 
 async function getPopularMovies(): Promise<Movie[]> {
   const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY;
@@ -28,9 +23,7 @@ export default async function HomePage() {
         {movies.map((movie) => (
           <MovieCard 
           key={movie.id} 
-          id={movie.id}
-          title={movie.title}
-          posterPath={movie.poster_path} />
+          movie={movie} />
         ))}
       </ul>
     </main>

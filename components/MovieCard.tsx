@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Movie } from "@/types/movie";
 
 type MovieCardProps = {
-    id: number;
-    title: string;
-    posterPath: string | null;
+    movie: Movie;
 }
 
-export default function MovieCard({ id, title, posterPath }: MovieCardProps) {
+export default function MovieCard({ movie }: MovieCardProps) {
+    const { id, title, poster_path } = movie;
     const [isFavorite, setIsFavorite] = useState(false);
 
-    const imageUrl = posterPath
-    ? `https://image.tmdb.org/t/p/w300${posterPath}`
+    const imageUrl = poster_path
+    ? `https://image.tmdb.org/t/p/w300${poster_path}`
     : "/placeholder.png";
 
     useEffect(() => {
