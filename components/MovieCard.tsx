@@ -16,14 +16,19 @@ export default function MovieCard({ movie }: MovieCardProps) {
     : "/placeholder.png";
 
     useEffect(() => {
-        const storedFavorites = localStorage.getItem("favorites");
-    
-        if (storedFavorites) {
-            const favoritesIds = JSON.parse(storedFavorites);
-            setIsFavorite(favoritesIds.includes(id));
+        async function checkFavorite() {
+            const response = await fetch("/api/favorites");
+            const favorites = await response.json();
+
+            const isFav = favorites.some(
+                (fav: { movieId: number }) => fav.movieId === movie.id
+            );
+
+            setIsFavorite(isFav);
         }
-    }, [id]);
-    
+
+        checkFavorite()
+    }, [movie.id]);
 
     return (
         <li className="flex flex-col items-center gap-2">
@@ -38,22 +43,26 @@ export default function MovieCard({ movie }: MovieCardProps) {
             </h2>
 
             <button
-            onClick={() => {
-                const storedFavorites = localStorage.getItem("favorites");
-                let favoritesIds = storedFavorites ? JSON.parse(storedFavorites) : [];
-              
-                if (favoritesIds.includes(id)) {
-                  favoritesIds = favoritesIds.filter((favId: number) => favId !== id);
-                  setIsFavorite(false);
-                } else {
-                  favoritesIds.push(id);
-                  setIsFavorite(true);
-                }
-              
-                localStorage.setItem("favorites", JSON.stringify(favoritesIds));
-              }}
-              
             className="text-xl"
+            onClick={async() => {
+                if (isFavorite) {
+                    await fetch("/api/favorites", {
+                        method: "DELETE",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ movieId: movie.id }), 
+                    });
+
+                    setIsFavorite(false);
+                } else {
+                    await fetch("/api/favorites", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ movieId: movie.id }),
+                });
+
+                setIsFavorite(true);
+                }
+              }}
             >
                 {isFavorite ? "❤️" : "🤍"}
             </button>
