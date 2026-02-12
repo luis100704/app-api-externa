@@ -63,6 +63,9 @@ export default function MovieCard({ movie }: MovieCardProps) {
                 setIsFavorite(true);
                 }
               }}
+
+
+              
             >
                 {isFavorite ? "❤️" : "🤍"}
             </button>
