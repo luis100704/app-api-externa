@@ -1,5 +1,7 @@
 import MovieCard from "@/components/MovieCard";
 import type { Movie } from "@/types/movie";
+import Link from "next/link";
+
 
 async function getPopularMovies(page: number): Promise<{
   results: Movie[];
@@ -18,9 +20,16 @@ async function getPopularMovies(page: number): Promise<{
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const currentPage = Number(searchParams.page) || 1;
+  const params = await searchParams
+
+  const currentPage =
+    params.page && !isNaN(Number(params.page))
+      ? Number(params.page)
+      : 1;
+
+  console.log("Página actual:", currentPage);
 
   const data = await getPopularMovies(currentPage);
   const movies = data.results;
@@ -42,17 +51,19 @@ export default async function HomePage({
 
       <div className="flex justify-between mt-6">
         {currentPage > 1 ? (
-          <a href={`/?page=${currentPage - 1}`} className="px-4 py-2 bg-gray-200 rounded">
+          <Link 
+          href={`/?page=${currentPage - 1}`} className="px-4 py-2 bg-gray-200 rounded">
             Anterior
-          </a>
+          </Link>
         ) : (
           <div />
         )}
 
         {currentPage < totalPages ? (
-          <a href={`/?page=${currentPage + 1}`} className="px-4 py-2 bg-gray-200 rounded">
+          <Link 
+          href={`/?page=${currentPage + 1}`} className="px-4 py-2 bg-gray-200 rounded">
             Siguiente
-          </a>
+          </Link>
         ) : (
           <div />
         )}
