@@ -29,8 +29,6 @@ export default async function HomePage({
       ? Number(params.page)
       : 1;
 
-  console.log("Página actual:", currentPage);
-
   const data = await getPopularMovies(currentPage);
   const movies = data.results;
   const totalPages = data.total_pages
