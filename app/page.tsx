@@ -14,22 +14,51 @@ async function getPopularMovies(page: number): Promise<{
     { cache: "no-store"}
   );
 
+  if (!response.ok) {
+    throw new Error("Error al obtener películas");
+  }
+
+  return response.json();
+}
+
+async function searchMovies(page: number, search: string) {
+  const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+
+  const response = await fetch(
+    `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=es-ES&query=${search}&page=${page}`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Error al obtener películas");
+  }
+
   return response.json();
 }
 
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; search?: string }>;
 }) {
   const params = await searchParams
+  const searchQuery = params.search;
 
   const currentPage =
     params.page && !isNaN(Number(params.page))
       ? Number(params.page)
       : 1;
 
-  const data = await getPopularMovies(currentPage);
+  let data: { results: Movie[]; total_pages: number};
+
+  if(searchQuery) {
+    data = await searchMovies(currentPage, searchQuery);
+  } else {
+    data = await getPopularMovies(currentPage);
+  }
+
   const movies = data.results;
   const totalPages = data.total_pages
 
@@ -38,6 +67,16 @@ export default async function HomePage({
       <h1 className="text-xl font-bold mb-4">
         Películas populares (Página {currentPage})
       </h1>
+
+      <form className="mb-4">
+        <input
+        type="text"
+        name="search"
+        placeholder="Buscar película..."
+        defaultValue={searchQuery || ""}
+        className="border px-3 py-2 rounded w-full"
+      />
+      </form>
 
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {movies.map((movie) => (
